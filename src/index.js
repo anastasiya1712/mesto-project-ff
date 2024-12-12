@@ -1,3 +1,5 @@
+console.log('Hello, World!')
+
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
 
