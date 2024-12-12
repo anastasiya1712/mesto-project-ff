@@ -1,4 +1,5 @@
 const path = require("path");
+
 module.exports = {
   entry: { main: "./src/index.js" },
   output: {
@@ -6,12 +7,20 @@ module.exports = {
     filename: "main.js",
     publicPath: "",
   },
-  mode: 'development',
+  mode: "development",
   devServer: {
-    static: path.resolve(__dirname, './dist'), 
-    compress: true, 
-    port: 8080, 
-
-    open: true 
-  }
+    static: path.resolve(__dirname, "./dist"),
+    compress: true,
+    port: 8080,
+    open: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+        exclude: "/node_modules/",
+      },
+    ],
+  },
 };
