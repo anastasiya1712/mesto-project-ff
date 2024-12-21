@@ -31,17 +31,31 @@ initialCards.forEach((card) => {
 });
 
 
-// const editButton = document.querySelector('.profile__edit-button');//кнопка редактировать
-// const addButton = document.querySelector('.profile__add-button');//кнопка +
-// const image = document.querySelector('.profile__image');// кнопка картинка
-// const editModal = document.querySelector('.popup_type_edit');//кн редактировать модальное окно
-// const newModal = document.querySelector('.popup_type_new-card');//кн новое модальное окно
-// const closeModals= document.querySelector('.popup__close');//кн закрыть модальное окно
+const editButton = document.querySelector('.profile__edit-button');//кнопка редактировать
+const addButton = document.querySelector('.profile__add-button');//кнопка +
+const image = document.querySelector('.profile__image');// кнопка картинка
+const editModal = document.querySelector('.popup_type_edit');//кн редактировать модальное окно
+const newCardModal = document.querySelector('.popup_type_new-card');//кн новое модальное окно
+const closeButtons= document.querySelectorAll('.popup__close');//кн закрыть модальное окно
 
-// //Функция для открытия модального окна
-// function openModal(modal) { 
-//   modal.style.display = 'block';
-// }
+ //Функция для открытия модального окна
+function openModal(modal) { 
+  modal.style.display = 'block';
+}
 
 // //Функция для закрытия модального окна
-// function closeModal()
+function closeModal () {
+  const modals = document.querySelectorAll('.popup');
+  modals.forEach (modal => {
+    modal.style.display = 'none';
+  });
+}
+
+//открытия модальных окон
+editButton.addEventListener( 'click', () => openModal (editModal) );
+addButton.addEventListener( 'click', () => openModal (newCardModal) ) ;
+image.addEventListener( 'click', () =>openModal(image) );//?
+
+closeButtons.forEach(button => {
+  button.addEventListener('click', closeModal);
+})
