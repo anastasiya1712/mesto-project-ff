@@ -1,5 +1,6 @@
 import './pages/index.css';
 import { initialCards } from './cards';
+import { openModal, closeModal } from './components/modal';
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -38,23 +39,11 @@ const editModal = document.querySelector('.popup_type_edit');//кн редакт
 const newCardModal = document.querySelector('.popup_type_new-card');//кн новое модальное окно
 const closeButtons= document.querySelectorAll('.popup__close');//кн закрыть модальное окно
 
- //Функция для открытия модального окна
-function openModal(modal) { 
-  modal.style.display = 'block';
-}
-
-// //Функция для закрытия модального окна
-function closeModal () {
-  const modals = document.querySelectorAll('.popup');
-  modals.forEach (modal => {
-    modal.style.display = 'none';
-  });
-}
 
 //открытия модальных окон
 editButton.addEventListener( 'click', () => openModal (editModal) );
 addButton.addEventListener( 'click', () => openModal (newCardModal) ) ;
-image.addEventListener( 'click', () =>openModal(image) );//?
+//image.addEventListener( 'click', () =>openModal(image) );//?
 
 closeButtons.forEach(button => {
   button.addEventListener('click', closeModal);
