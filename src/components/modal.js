@@ -19,10 +19,10 @@ export function closeModal() {
   const allPopups = document.getElementsByClassName('popup'); 
   console.log(allPopups);
 
-  allPopups.forEach((element) => {
+  Array.from(allPopups).forEach((element) => {
     const isActive = element.classList.contains('popup_is-opened');
     if (isActive) {
-      modal.classList.remove('popup_is-opened');
+      element.classList.remove('popup_is-opened');
     }
   });
 }
