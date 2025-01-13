@@ -1,53 +1,19 @@
-import { createCardElement } from './card';
-
 //Функция для открытия модального окна
-export function openModal(modal, imageUrl, imageText) {
-  if (imageUrl !== undefined) {
-    let imageElement = modal.querySelector('.popup__image');
-    imageElement.src = imageUrl;
-  }
-
-  if (imageText !== undefined) {
-    let imageTextElement = modal.querySelector(".popup__caption");
-    imageTextElement.textContent = imageText;
-  }
-
-  modal.classList.add('popup_is-opened');
-  const closeButton = modal.querySelector('.popup__close');
-  closeButton.addEventListener('click', (evt) => {
-    console.log(evt.target);
-    closeModal(modal);
-  });
-
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      closeModal(modal);
-    }
-  });
-
-  modal.addEventListener("click", closeModalByClickOverlay);
-
-  document.querySelector('.popup__input_type_name').value = document.querySelector('.profile__title').textContent;
-  document.querySelector('.popup__input_type_description').value = document.querySelector('.profile__description').textContent;
-
-  const formElement = document.getElementsByName('edit-profile')[0];
-  const formElementNewPlace = document.getElementsByName('new-place')[0];
-
-  formElement.addEventListener('submit', handleFormSubmit);
-  formElementNewPlace.addEventListener('submit', handleFormNewPlaceSubmit);
+export function openModal(popupElement) {
+  popupElement.classList.add('popup_is-opened');
+  document.addEventListener('keydown', escapeHandler);
 }
 
 //Функция для закрытия модального окна
-export function closeModal() {
-  const allPopups = document.getElementsByClassName('popup');
-  console.log(allPopups);
+export function closeModal(popupElement) {
+  popupElement.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', escapeHandler);
+}
 
-  Array.from(allPopups).forEach((element) => {
-    const isActive = element.classList.contains('popup_is-opened');
-    if (isActive) {
-      element.classList.remove('popup_is-opened');
-    }
-  });
+function escapeHandler(evt) {
+  if (evt.key === 'Escape') {
+    closeModal(popupElement);
+  }
 }
 
 function handleFormSubmit(evt) {
@@ -64,7 +30,7 @@ function handleFormSubmit(evt) {
   closeModal();
 }
 
-function handleFormNewPlaceSubmit(evt) {
+function handleFormNewPlaceSubmit(evt, createCardElement) {
   evt.preventDefault();
   const placesList = document.querySelector(".places__list");
   const cardTemplate = document.querySelector("#card-template").content;
