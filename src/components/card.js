@@ -1,9 +1,12 @@
 export function createCardElement(cardTemplate, cardInfo, openModal, modalElement, removeCardElement, likeHandler) {
     const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-    const cardImage = cardElement.querySelector(".card__image");
+    const cardImageElement = cardElement.querySelector(".card__image");
+    const cardDescriptionElement = cardElement.querySelector(".card__description");
 
-    cardImage.src = cardInfo.link;
-    cardImage.addEventListener("click", () => {
+    cardImageElement.src = cardInfo.link;
+    cardImageElement.addEventListener("click", () => {
+        modalElement.querySelector(".popup__image").src = cardImageElement.src;
+        modalElement.querySelector(".popup__caption").textContent = cardDescriptionElement.textContent;
         openModal(modalElement);
     });
     cardElement.querySelector(".card__title").textContent = cardInfo.name;
