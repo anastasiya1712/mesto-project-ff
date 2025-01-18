@@ -12,6 +12,8 @@ const addCardBtn = document.querySelector('.profile__add-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
 const addCardModal = document.querySelector('.popup_type_new-card');
 const cardModal = document.querySelector(".popup_type_image");
+const cardModalImage = cardModal.querySelector(".popup__image");
+const cardModalCaption = cardModal.querySelector(".popup__caption");
 const closeBtns = document.querySelectorAll('.popup__close');
 const cardList = document.querySelector(".places__list");
 const editProfileForm = document.forms["edit-profile"];
@@ -33,7 +35,7 @@ initialCards.forEach((card) => {
     name: card.name,
     link: card.link
   };
-  const newCard = createCardElement(cardTemplate, cardInfo, openModal, cardModal, removeCardElement, likeHandler);
+  const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
   cardList.append(newCard);
 });
 
@@ -55,6 +57,16 @@ closeBtns.forEach(button => {
   });
 });
 
+function openImagePopup(evt) {
+  const cardElement = evt.target;
+  const cardTitleTextTrimed = cardElement.closest(".card").querySelector(".card__title").textContent.trim();
+
+  cardModalImage.src = cardElement.src;
+  cardModalImage.alt = cardTitleTextTrimed;
+  cardModalCaption.textContent = cardTitleTextTrimed;
+  openModal(cardModal);
+}
+
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
 
@@ -71,7 +83,7 @@ function handleAddCardFormSubmit(evt) {
     name: cardNameInput.value,
     link: cardUrlInput.value
   };
-  const newCard = createCardElement(cardTemplate, cardInfo, openModal, cardModal, removeCardElement, likeHandler);
+  const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
   cardList.prepend(newCard);
 
   closeModal(addCardModal);

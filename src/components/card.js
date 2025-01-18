@@ -1,15 +1,12 @@
-export function createCardElement(cardTemplate, cardInfo, openModal, modalElement, removeCardElement, likeHandler) {
+export function createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler) {
     const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
     const cardImageElement = cardElement.querySelector(".card__image");
-    const cardDescriptionElement = cardElement.querySelector(".card__description");
 
-    cardImageElement.src = cardInfo.link;
-    cardImageElement.addEventListener("click", () => {
-        modalElement.querySelector(".popup__image").src = cardImageElement.src;
-        modalElement.querySelector(".popup__caption").textContent = cardDescriptionElement.textContent;
-        openModal(modalElement);
-    });
     cardElement.querySelector(".card__title").textContent = cardInfo.name;
+    cardImageElement.src = cardInfo.link;
+    cardImageElement.alt = cardInfo.name;
+
+    cardImageElement.addEventListener("click", openImagePopup);
     cardElement.querySelector(".card__delete-button").addEventListener("click", removeCardElement);
     cardElement.querySelector(".card__like-button").addEventListener("click", likeHandler);
 
