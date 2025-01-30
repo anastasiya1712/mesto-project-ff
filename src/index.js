@@ -1,6 +1,6 @@
 import './pages/index.css';
 import { initialCards } from './cards';
-import { openModal, closeModal, overlayClickHandler } from './components/modal';
+import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
 
@@ -25,9 +25,6 @@ const cardNameInput = addCardForm.querySelector(".popup__input_type_card-name");
 const cardUrlInput = addCardForm.querySelector(".popup__input_type_url");
 const popups = document.querySelectorAll('.popup');
 
-nameInput.value = profileTitleElement.textContent;
-jobInput.value = profileDescriptionElement.textContent;
-
 editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
 
@@ -48,7 +45,11 @@ popups.forEach((popup) => {
   });
 })
 
-editProfileBtn.addEventListener('click', () => openModal(editProfileModal));
+editProfileBtn.addEventListener('click', () => {
+  nameInput.value = profileTitleElement.textContent;
+  jobInput.value = profileDescriptionElement.textContent;
+  openModal(editProfileModal)
+});
 addCardBtn.addEventListener('click', () => openModal(addCardModal));
 
 closeBtns.forEach(button => {
@@ -69,11 +70,11 @@ enableValidation({
 
 function openImagePopup(evt) {
   const cardElement = evt.target;
-  const cardTitleTextTrimed = cardElement.closest(".card").querySelector(".card__title").textContent.trim();
+  const cardTitleTextTrimmed = cardElement.closest(".card").querySelector(".card__title").textContent.trim();
 
   cardModalImage.src = cardElement.src;
-  cardModalImage.alt = cardTitleTextTrimed;
-  cardModalCaption.textContent = cardTitleTextTrimed;
+  cardModalImage.alt = cardTitleTextTrimmed;
+  cardModalCaption.textContent = cardTitleTextTrimmed;
   openModal(cardModal);
 }
 

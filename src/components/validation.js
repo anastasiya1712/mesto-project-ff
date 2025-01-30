@@ -23,8 +23,8 @@ function setEventListeners(formElement, inputSelector, inputErrorClass, errorCla
 
     inputList.forEach((inputElement) => {
         inputElement.addEventListener("input", () => {
-            //toggleButtonState(inputList, buttonElement, inactiveButtonClass);
             isValid(formElement, inputElement, inputErrorClass, errorClass);
+            toggleButtonState(inputList, buttonElement, inactiveButtonClass);
         });
     });
 }
