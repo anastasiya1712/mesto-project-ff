@@ -2,6 +2,7 @@ import './pages/index.css';
 import { initialCards } from './cards';
 import { openModal, closeModal, overlayClickHandler } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
+import { enableValidation, clearValidation } from './components/validation';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -55,6 +56,15 @@ closeBtns.forEach(button => {
     const modal = button.closest('.popup');
     closeModal(modal);
   });
+});
+
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
 });
 
 function openImagePopup(evt) {
