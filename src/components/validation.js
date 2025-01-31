@@ -1,7 +1,10 @@
 export function enableValidation(validationConfig) {
     const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
     formList.forEach((formElement) => {
-        formElement.addEventListener("submit", (e) => {});
+        formElement.addEventListener("submit", (evt) => {
+            evt.preventDefault();
+        });
+
         setEventListeners(
             formElement,
             validationConfig.inputSelector,
@@ -30,14 +33,14 @@ function setEventListeners(formElement, inputSelector, inputErrorClass, errorCla
 }
 
 function isValid(formElement, inputElement, inputErrorClass, errorClass) {
-    if(inputElement.validity.patternMismatch) {
+    if (inputElement.validity.patternMismatch) {
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
     }
     else {
         inputElement.setCustomValidity("");
     }
 
-    if(!inputElement.validity.valid) {
+    if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage, inputErrorClass, errorClass);
     }
     else {
@@ -60,7 +63,7 @@ function hideInputError(formElement, inputElement, inputErrorClass, errorClass) 
 }
 
 function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
-    if(hasInvalidInput(inputList)) {
+    if (hasInvalidInput(inputList)) {
         buttonElement.classList.add(inactiveButtonClass);
     }
     else {

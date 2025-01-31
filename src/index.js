@@ -81,14 +81,23 @@ function openImagePopup(evt) {
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
 
+  const submitButtonElement = evt.target.querySelector(".popup__button");
+  if (submitButtonElement.classList.contains("popup__button_disabled")) {
+    return;
+  }
+
   profileTitleElement.textContent = nameInput.value;
   profileDescriptionElement.textContent = jobInput.value;
-
   closeModal(editProfileModal);
 }
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
+
+  const submitButtonElement = evt.target.querySelector(".popup__button");
+  if (submitButtonElement.classList.contains("popup__button_disabled")) {
+    return;
+  }
 
   const cardInfo = {
     name: cardNameInput.value,
