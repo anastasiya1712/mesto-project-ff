@@ -2,7 +2,7 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, createCard } from './components/api';
+import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, createCard, deleteCard } from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -26,24 +26,36 @@ const cardNameInput = addCardForm.querySelector(".popup__input_type_card-name");
 const cardUrlInput = addCardForm.querySelector(".popup__input_type_url");
 const popups = document.querySelectorAll('.popup');
 
-getCurrentUserInfo()
-  .then((user) => {
-    profileTitleElement.textContent = user.name;
-    profileDescriptionElement.textContent = user.about;
-    profileImageElement.style.backgroundImage = `url(${user.avatar})`;
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+let currentUserId;
+const userPromise = getCurrentUserInfo();
+const cardsPromise = getInitialCards();
+Promise.all([userPromise, cardsPromise])
+  .then(([userResponse, cardsResponse]) => {
+    // user
+    currentUserId = userResponse._id;
+    profileTitleElement.textContent = userResponse.name;
+    profileDescriptionElement.textContent = userResponse.about;
+    profileImageElement.style.backgroundImage = `url(${userResponse.avatar})`;
 
-getInitialCards()
-  .then((initialCards) => {
-    initialCards.forEach((card) => {
+    // cards
+    cardsResponse.forEach((card) => {
       const cardInfo = {
+        _id: card._id,
         name: card.name,
-        link: card.link
+        link: card.link,
+        likes: card.likes,
+        owner: {
+          _id: card.owner._id
+        }
       };
-      const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
+      const newCard = createCardElement(
+        cardTemplate, 
+        cardInfo, 
+        openImagePopup, 
+        removeCardElement, 
+        deleteCard,
+        likeHandler, 
+        currentUserId);
       cardList.append(newCard);
     });
   })
@@ -132,7 +144,14 @@ function handleAddCardFormSubmit(evt) {
     link: cardUrlInput.value
   })
     .then((newCardInfo) => {
-      const newCard = createCardElement(cardTemplate, newCardInfo, openImagePopup, removeCardElement, likeHandler);
+      const newCard = createCardElement(
+        cardTemplate, 
+        newCardInfo, 
+        openImagePopup, 
+        removeCardElement, 
+        deleteCard,
+        likeHandler, 
+        currentUserId);
       cardList.prepend(newCard);
     })
     .catch((err) => {
