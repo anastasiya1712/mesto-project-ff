@@ -2,7 +2,7 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, getInitialCards } from './components/api';
+import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards } from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -36,10 +36,6 @@ getCurrentUserInfo()
     console.log(err);
   });
 
-
-editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
-addCardForm.addEventListener("submit", handleAddCardFormSubmit);
-
 getInitialCards()
   .then((initialCards) => {
     initialCards.forEach((card) => {
@@ -55,6 +51,9 @@ getInitialCards()
     console.log(err);
   });
 
+editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
+addCardForm.addEventListener("submit", handleAddCardFormSubmit);
+  
 popups.forEach((popup) => {
   popup.addEventListener("click", (evt) => {
     if (evt.target === popup) {
@@ -104,8 +103,19 @@ function handleEditProfileFormSubmit(evt) {
     return;
   }
 
-  profileTitleElement.textContent = nameInput.value;
-  profileDescriptionElement.textContent = jobInput.value;
+  editCurrentUserInfo({
+    name: nameInput.value,
+    about: jobInput.value
+  })
+    .then((updatedUserInfo) => {
+      profileTitleElement.textContent = updatedUserInfo.name;
+      profileDescriptionElement.textContent = updatedUserInfo.about;
+      profileImageElement.style.backgroundImage = `url(${user.avatar})`;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   closeModal(editProfileModal);
 }
 
