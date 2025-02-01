@@ -2,10 +2,16 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import {
-  getCurrentUserInfo, editCurrentUserInfo, editCurrentUserAvatar, getInitialCards,
-  createCard, deleteCard, setLikeToCard, deleteLikeFromCard
-} from './components/api';
+import { getCurrentUserInfo, editCurrentUserInfo, editCurrentUserAvatar, getInitialCards, createCard, deleteCard, setLikeToCard, deleteLikeFromCard } from './components/api';
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -48,26 +54,13 @@ Promise.all([userPromise, cardsPromise])
 
     // cards
     cardsResponse.forEach((card) => {
-      const cardInfo = {
-        _id: card._id,
-        name: card.name,
-        link: card.link,
-        likes: card.likes,
-        owner: {
-          _id: card.owner._id
-        }
-      };
       const newCard = createCardElement(
+        currentUserId,
         cardTemplate,
-        cardInfo,
+        card,
         openImagePopup,
-        openDeleteCardPopup,
-        removeCardElement,
-        deleteCard,
-        likeHandler,
-        setLikeToCard,
-        deleteLikeFromCard,
-        currentUserId);
+        deleteCardCallback,
+        likeCallback);
       cardList.append(newCard);
     });
   })
@@ -80,7 +73,7 @@ addCardForm.addEventListener("submit", handleAddCardFormSubmit);
 editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit);
 
 editProfileAvatarElement.addEventListener("click", () => {
-  clearValidation(editAvatarForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
+  clearValidation(editAvatarForm, validationConfig)
   openModal(avatarEditModal);
 });
 
@@ -95,11 +88,11 @@ popups.forEach((popup) => {
 editProfileBtn.addEventListener('click', () => {
   nameInput.value = profileTitleElement.textContent;
   jobInput.value = profileDescriptionElement.textContent;
-  clearValidation(editProfileForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
+  clearValidation(editProfileForm, validationConfig)
   openModal(editProfileModal)
 });
 addCardBtn.addEventListener('click', () => {
-  clearValidation(addCardForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
+  clearValidation(addCardForm, validationConfig)
   openModal(addCardModal)
 }
 );
@@ -116,14 +109,7 @@ deleteCardButton.addEventListener('click', (evt) => {
   closeModal(modal);
 });
 
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-});
+enableValidation(validationConfig);
 
 function openDeleteCardPopup() {
   openModal(deleteCardModal);
@@ -147,7 +133,7 @@ function handleEditProfileFormSubmit(evt) {
   if (submitButtonElement.classList.contains("popup__button_disabled")) {
     return;
   }
-
+  renderLoading(submitButtonElement, true);
   editCurrentUserInfo({
     name: nameInput.value,
     about: jobInput.value
@@ -159,6 +145,9 @@ function handleEditProfileFormSubmit(evt) {
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      renderLoading(submitButtonElement, false);
     });
 
   closeModal(editProfileModal);
@@ -171,27 +160,26 @@ function handleAddCardFormSubmit(evt) {
   if (submitButtonElement.classList.contains("popup__button_disabled")) {
     return;
   }
-
+  renderLoading(submitButtonElement, true);
   createCard({
     name: cardNameInput.value,
     link: cardUrlInput.value
   })
     .then((newCardInfo) => {
       const newCard = createCardElement(
+        currentUserId,
         cardTemplate,
         newCardInfo,
         openImagePopup,
-        openDeleteCardPopup,
-        removeCardElement,
-        deleteCard,
-        likeHandler,
-        setLikeToCard,
-        deleteLikeFromCard,
-        currentUserId);
+        deleteCardCallback,
+        likeCallback);
       cardList.prepend(newCard);
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      renderLoading(submitButtonElement, false);
     });
 
   closeModal(addCardModal);
@@ -206,17 +194,53 @@ function handleEditAvatarFormSubmit(evt) {
   if (submitButtonElement.classList.contains("popup__button_disabled")) {
     return;
   }
-
+  renderLoading(submitButtonElement, true);
   const url = avatarUrlInput.value;
   editCurrentUserAvatar(url)
-    .then((res) => {
-      if (res.ok) {
-        profileImageElement.style.backgroundImage = `url(${url})`;
-      }
+    .then((user) => {
+      profileImageElement.style.backgroundImage = `url(${user.avatar})`;
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      renderLoading(submitButtonElement, false);
     });
 
   closeModal(avatarEditModal);
+}
+
+function renderLoading(button, isLoading) {
+  if (isLoading) {
+    button.textContent = "Сохранение...";
+  }
+  else {
+    button.textContent = "Сохранить";
+  }
+}
+
+const likeCallback = (cardId, cardElement, evt) => {
+  const likeMethod = cardElement.querySelector(".card__like-button").classList.contains("card__like-button_is-active")
+    ? deleteLikeFromCard
+    : setLikeToCard;
+
+  likeMethod(cardId)
+    .then((card) => {
+      cardElement.querySelector(".card__like-count").textContent = card.likes.length;
+      likeHandler(evt);
+    })
+    .catch(err => console.log(err));
+}
+
+const deleteCardCallback = (cardId, evt) => {
+  const popup = openDeleteCardPopup();
+  popup.querySelector(".popup__button").addEventListener("click", () => {
+    deleteCard(cardId)
+      .then(() => {
+        removeCardElement(evt);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 }

@@ -1,14 +1,10 @@
 export function createCardElement(
+    currentUserId,
     cardTemplate,
     cardInfo,
     openImagePopup,
-    openDeleteCardPopup,
-    removeCardElement,
-    removeCardApi,
-    likeHandler,
-    setLikeApi,
-    deleteLikeApi,
-    currentUserId) {
+    removeCardCallback,
+    likeCallback) {
     const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
     const cardImageElement = cardElement.querySelector(".card__image");
 
@@ -17,22 +13,9 @@ export function createCardElement(
     cardImageElement.alt = cardInfo.name;
     cardElement.querySelector(".card__like-count").textContent = cardInfo.likes.length;
     cardImageElement.addEventListener("click", openImagePopup);
-    cardElement.querySelector(".card__like-button").addEventListener("click", (evt) => {
 
-        if (!cardElement.querySelector(".card__like-button").classList.contains("card__like-button_is-active")) {
-            setLikeApi(cardInfo._id)
-                .then((card) => {
-                    cardElement.querySelector(".card__like-count").textContent = card.likes.length;
-                    likeHandler(evt);
-                });
-        }
-        else {
-            deleteLikeApi(cardInfo._id)
-                .then((card) => {
-                    cardElement.querySelector(".card__like-count").textContent = card.likes.length;
-                    likeHandler(evt);
-                });
-        }
+    cardElement.querySelector(".card__like-button").addEventListener("click", (evt) => {
+        likeCallback(cardInfo._id, cardElement, evt);
     });
 
     if (cardInfo.likes.some((like) => { return like._id === currentUserId })) {
@@ -41,19 +24,7 @@ export function createCardElement(
 
     if (currentUserId === cardInfo.owner._id) {
         cardElement.querySelector(".card__delete-button").addEventListener("click", (evt) => {
-            const popup = openDeleteCardPopup();
-            popup.querySelector(".popup__button").addEventListener("click", () => {
-                removeCardApi(cardInfo._id)
-                    .then((res) => {
-                        if (res.ok) {
-                            removeCardElement(evt);
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-
-            });
+            removeCardCallback(cardInfo._id, evt)
         });
     }
     else {

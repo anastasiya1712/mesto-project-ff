@@ -10,29 +10,16 @@ export const getCurrentUserInfo = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         headers: config.headers
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
 }
 
 export const editCurrentUserInfo = (userInfo) => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
         headers: config.headers,
-        body: JSON.stringify({
-            name: userInfo.name,
-            about: userInfo.about
-        })
+        body: JSON.stringify(userInfo)
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
 }
 
 export const editCurrentUserAvatar = (avatarUrl) => {
@@ -42,19 +29,15 @@ export const editCurrentUserAvatar = (avatarUrl) => {
         body: JSON.stringify({
             avatar: avatarUrl
         })
-    });
+    })
+        .then(handleResponse);
 }
 
 export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         headers: config.headers
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
 }
 
 export const createCard = (cardInfo) => {
@@ -66,19 +49,15 @@ export const createCard = (cardInfo) => {
             link: cardInfo.link
         })
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
 }
 
 export const deleteCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: config.headers
-    });
+    })
+        .then(handleResponse);
 }
 
 export const setLikeToCard = (cardId) => {
@@ -86,12 +65,7 @@ export const setLikeToCard = (cardId) => {
         method: 'PUT',
         headers: config.headers
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
 }
 
 export const deleteLikeFromCard = (cardId) => {
@@ -99,10 +73,12 @@ export const deleteLikeFromCard = (cardId) => {
         method: 'DELETE',
         headers: config.headers
     })
-        .then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(handleResponse);
+}
+
+function handleResponse(res) {
+    if (res.ok) {
+        return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
 }
