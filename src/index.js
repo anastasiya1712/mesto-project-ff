@@ -1,5 +1,4 @@
 import './pages/index.css';
-import { initialCards } from './cards';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
@@ -9,7 +8,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
 const profileTitleElement = profileInfoElement.querySelector(".profile__title");
 const profileDescriptionElement = profileInfoElement.querySelector(".profile__description");
-const profileImageElement =  document.querySelector('.profile__image');
+const profileImageElement = document.querySelector('.profile__image');
 const editProfileBtn = document.querySelector('.profile__edit-button');
 const addCardBtn = document.querySelector('.profile__add-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
@@ -27,7 +26,7 @@ const cardNameInput = addCardForm.querySelector(".popup__input_type_card-name");
 const cardUrlInput = addCardForm.querySelector(".popup__input_type_url");
 const popups = document.querySelectorAll('.popup');
 
-getCurrentUserInfo() 
+getCurrentUserInfo()
   .then((user) => {
     profileTitleElement.textContent = user.name;
     profileDescriptionElement.textContent = user.about;
@@ -41,23 +40,20 @@ getCurrentUserInfo()
 editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
 
-// getInitialCards()
-//   .then((result) => {
-//     console.log(result);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
-
-initialCards.forEach((card) => {
-  const cardInfo = {
-    name: card.name,
-    link: card.link
-  };
-  const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
-  cardList.append(newCard);
-});
+getInitialCards()
+  .then((initialCards) => {
+    initialCards.forEach((card) => {
+      const cardInfo = {
+        name: card.name,
+        link: card.link
+      };
+      const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
+      cardList.append(newCard);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 popups.forEach((popup) => {
   popup.addEventListener("click", (evt) => {
