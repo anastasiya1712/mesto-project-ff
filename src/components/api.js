@@ -46,3 +46,20 @@ export const getInitialCards = () => {
             return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
+
+export const createCard = (cardInfo) => {
+    return fetch(`${config.baseUrl}/cards`, {
+        method: 'POST',
+        headers: config.headers,
+        body: JSON.stringify({
+            name: cardInfo.name,
+            link: cardInfo.link
+        })
+    })
+        .then((res) => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
+        });
+}
