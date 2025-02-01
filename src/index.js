@@ -78,6 +78,7 @@ addCardForm.addEventListener("submit", handleAddCardFormSubmit);
 editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit); 
 
 editProfileAvatarElement.addEventListener("click", () => {
+  clearValidation(editAvatarForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
   openModal(avatarEditModal);
 });
 
@@ -92,9 +93,13 @@ popups.forEach((popup) => {
 editProfileBtn.addEventListener('click', () => {
   nameInput.value = profileTitleElement.textContent;
   jobInput.value = profileDescriptionElement.textContent;
+  clearValidation(editProfileForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
   openModal(editProfileModal)
 });
-addCardBtn.addEventListener('click', () => openModal(addCardModal));
+addCardBtn.addEventListener('click', () => {
+  clearValidation(addCardForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
+  openModal(addCardModal)}
+);
 
 closeBtns.forEach(button => {
   button.addEventListener('click', () => {

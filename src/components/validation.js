@@ -16,7 +16,9 @@ export function enableValidation(validationConfig) {
 }
 
 export function clearValidation(form, validationConfig) {
-
+    Array.from(form.getElementsByTagName("input")).forEach((inputElement) => {
+        hideInputError(form, inputElement, validationConfig.inputErrorClass, validationConfig.errorClass);
+    })
 }
 
 function setEventListeners(formElement, inputSelector, inputErrorClass, errorClass, submitButtonSelector, inactiveButtonClass) {
