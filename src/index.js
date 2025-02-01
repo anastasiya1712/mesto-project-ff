@@ -2,7 +2,7 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards } from './components/api';
+import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, createCard } from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -127,12 +127,17 @@ function handleAddCardFormSubmit(evt) {
     return;
   }
 
-  const cardInfo = {
+  createCard({
     name: cardNameInput.value,
     link: cardUrlInput.value
-  };
-  const newCard = createCardElement(cardTemplate, cardInfo, openImagePopup, removeCardElement, likeHandler);
-  cardList.prepend(newCard);
+  })
+    .then((newCardInfo) => {
+      const newCard = createCardElement(cardTemplate, newCardInfo, openImagePopup, removeCardElement, likeHandler);
+      cardList.prepend(newCard);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   closeModal(addCardModal);
   cardNameInput.value = "";
