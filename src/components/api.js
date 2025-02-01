@@ -35,6 +35,16 @@ export const editCurrentUserInfo = (userInfo) => {
         });
 }
 
+export const editCurrentUserAvatar = (avatarUrl) => {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
+        method: 'PATCH',
+        headers: config.headers,
+        body: JSON.stringify({
+            avatar: avatarUrl
+        })
+    });
+}
+
 export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         headers: config.headers
