@@ -2,8 +2,10 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, editCurrentUserInfo, editCurrentUserAvatar, getInitialCards, 
-  createCard, deleteCard, setLikeToCard, deleteLikeFromCard} from './components/api';
+import {
+  getCurrentUserInfo, editCurrentUserInfo, editCurrentUserAvatar, getInitialCards,
+  createCard, deleteCard, setLikeToCard, deleteLikeFromCard
+} from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -56,13 +58,13 @@ Promise.all([userPromise, cardsPromise])
         }
       };
       const newCard = createCardElement(
-        cardTemplate, 
-        cardInfo, 
-        openImagePopup, 
+        cardTemplate,
+        cardInfo,
+        openImagePopup,
         openDeleteCardPopup,
-        removeCardElement, 
+        removeCardElement,
         deleteCard,
-        likeHandler, 
+        likeHandler,
         setLikeToCard,
         deleteLikeFromCard,
         currentUserId);
@@ -75,7 +77,7 @@ Promise.all([userPromise, cardsPromise])
 
 editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
-editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit); 
+editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit);
 
 editProfileAvatarElement.addEventListener("click", () => {
   clearValidation(editAvatarForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
@@ -98,7 +100,8 @@ editProfileBtn.addEventListener('click', () => {
 });
 addCardBtn.addEventListener('click', () => {
   clearValidation(addCardForm, { inputErrorClass: 'popup__input_type_error', errorClass: 'popup__error_visible' })
-  openModal(addCardModal)}
+  openModal(addCardModal)
+}
 );
 
 closeBtns.forEach(button => {
@@ -175,11 +178,11 @@ function handleAddCardFormSubmit(evt) {
   })
     .then((newCardInfo) => {
       const newCard = createCardElement(
-        cardTemplate, 
-        newCardInfo, 
-        openImagePopup, 
+        cardTemplate,
+        newCardInfo,
+        openImagePopup,
         openDeleteCardPopup,
-        removeCardElement, 
+        removeCardElement,
         deleteCard,
         likeHandler,
         setLikeToCard,
@@ -207,13 +210,13 @@ function handleEditAvatarFormSubmit(evt) {
   const url = avatarUrlInput.value;
   editCurrentUserAvatar(url)
     .then((res) => {
-      if(res.ok) {
+      if (res.ok) {
         profileImageElement.style.backgroundImage = `url(${url})`;
       }
     })
     .catch((err) => {
       console.log(err);
     });
-  
+
   closeModal(avatarEditModal);
 }
