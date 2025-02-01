@@ -2,7 +2,7 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, 
+import { getCurrentUserInfo, editCurrentUserInfo, editCurrentUserAvatar, getInitialCards, 
   createCard, deleteCard, setLikeToCard, deleteLikeFromCard} from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
@@ -13,15 +13,19 @@ const profileImageElement = document.querySelector('.profile__image');
 const editProfileBtn = document.querySelector('.profile__edit-button');
 const addCardBtn = document.querySelector('.profile__add-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
+const editProfileAvatarElement = document.querySelector(".profile__image-wrapper");
 const addCardModal = document.querySelector('.popup_type_new-card');
 const cardModal = document.querySelector(".popup_type_image");
 const deleteCardModal = document.querySelector(".popup_type_delete-card");
+const avatarEditModal = document.querySelector(".popup_type_edit-avatar");
 const cardModalImage = cardModal.querySelector(".popup__image");
 const cardModalCaption = cardModal.querySelector(".popup__caption");
 const closeBtns = document.querySelectorAll('.popup__close');
 const deleteCardButton = deleteCardModal.querySelector(".popup__button");
 const cardList = document.querySelector(".places__list");
 const editProfileForm = document.forms["edit-profile"];
+const editAvatarForm = document.forms["edit-avatar"];
+const avatarUrlInput = editAvatarForm.querySelector(".popup__input_type_url");
 const nameInput = editProfileForm.querySelector(".popup__input_type_name");
 const jobInput = editProfileForm.querySelector(".popup__input_type_description");
 const addCardForm = document.forms["new-place"];
@@ -71,7 +75,12 @@ Promise.all([userPromise, cardsPromise])
 
 editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
 addCardForm.addEventListener("submit", handleAddCardFormSubmit);
-  
+editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit); 
+
+editProfileAvatarElement.addEventListener("click", () => {
+  openModal(avatarEditModal);
+});
+
 popups.forEach((popup) => {
   popup.addEventListener("click", (evt) => {
     if (evt.target === popup) {
@@ -180,4 +189,26 @@ function handleAddCardFormSubmit(evt) {
   closeModal(addCardModal);
   cardNameInput.value = "";
   cardUrlInput.value = "";
+}
+
+function handleEditAvatarFormSubmit(evt) {
+  evt.preventDefault();
+
+  const submitButtonElement = evt.target.querySelector(".popup__button");
+  if (submitButtonElement.classList.contains("popup__button_disabled")) {
+    return;
+  }
+
+  const url = avatarUrlInput.value;
+  editCurrentUserAvatar(url)
+    .then((res) => {
+      if(res.ok) {
+        profileImageElement.style.backgroundImage = `url(${url})`;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  
+  closeModal(avatarEditModal);
 }
