@@ -1,10 +1,11 @@
 export function createCardElement(
-    cardTemplate, 
-    cardInfo, 
-    openImagePopup, 
-    removeCardElement, 
+    cardTemplate,
+    cardInfo,
+    openImagePopup,
+    openDeleteCardPopup,
+    removeCardElement,
     removeCardApi,
-    likeHandler, 
+    likeHandler,
     currentUserId) {
     const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
     const cardImageElement = cardElement.querySelector(".card__image");
@@ -16,17 +17,21 @@ export function createCardElement(
     cardImageElement.addEventListener("click", openImagePopup);
     cardElement.querySelector(".card__like-button").addEventListener("click", likeHandler);
 
-    if(currentUserId === cardInfo.owner._id) {
+    if (currentUserId === cardInfo.owner._id) {
         cardElement.querySelector(".card__delete-button").addEventListener("click", (evt) => {
-            removeCardApi(cardInfo._id)
-                .then((res) => {
-                    if(res.ok) {
-                        removeCardElement(evt);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            const popup = openDeleteCardPopup();
+            popup.querySelector(".popup__button").addEventListener("click", () => {
+                removeCardApi(cardInfo._id)
+                    .then((res) => {
+                        if (res.ok) {
+                            removeCardElement(evt);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+            });
         });
     }
     else {

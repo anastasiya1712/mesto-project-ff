@@ -14,9 +14,11 @@ const addCardBtn = document.querySelector('.profile__add-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
 const addCardModal = document.querySelector('.popup_type_new-card');
 const cardModal = document.querySelector(".popup_type_image");
+const deleteCardModal = document.querySelector(".popup_type_delete-card");
 const cardModalImage = cardModal.querySelector(".popup__image");
 const cardModalCaption = cardModal.querySelector(".popup__caption");
 const closeBtns = document.querySelectorAll('.popup__close');
+const deleteCardButton = deleteCardModal.querySelector(".popup__button");
 const cardList = document.querySelector(".places__list");
 const editProfileForm = document.forms["edit-profile"];
 const nameInput = editProfileForm.querySelector(".popup__input_type_name");
@@ -52,6 +54,7 @@ Promise.all([userPromise, cardsPromise])
         cardTemplate, 
         cardInfo, 
         openImagePopup, 
+        openDeleteCardPopup,
         removeCardElement, 
         deleteCard,
         likeHandler, 
@@ -88,6 +91,11 @@ closeBtns.forEach(button => {
   });
 });
 
+deleteCardButton.addEventListener('click', (evt) => {
+  const modal = evt.target.closest(".popup");
+  closeModal(modal);
+});
+
 enableValidation({
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -96,6 +104,11 @@ enableValidation({
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible'
 });
+
+function openDeleteCardPopup() {
+  openModal(deleteCardModal);
+  return deleteCardModal;
+}
 
 function openImagePopup(evt) {
   const cardElement = evt.target;
@@ -148,6 +161,7 @@ function handleAddCardFormSubmit(evt) {
         cardTemplate, 
         newCardInfo, 
         openImagePopup, 
+        openDeleteCardPopup,
         removeCardElement, 
         deleteCard,
         likeHandler, 
