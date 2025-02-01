@@ -5,10 +5,6 @@ export function openModal(popupElement) {
 
 export function closeModal(popupElement) {
   popupElement.classList.remove('popup_is-opened');
-  const inputElements = Array.from(popupElement.querySelectorAll(".popup__input"));
-  inputElements.forEach(inputElement => {
-    inputElement.value = "";
-  });
   document.removeEventListener('keydown', escapeClickHandler);
 }
 

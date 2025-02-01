@@ -73,7 +73,8 @@ addCardForm.addEventListener("submit", handleAddCardFormSubmit);
 editAvatarForm.addEventListener("submit", handleEditAvatarFormSubmit);
 
 editProfileAvatarElement.addEventListener("click", () => {
-  clearValidation(editAvatarForm, validationConfig)
+  clearValidation(editAvatarForm, validationConfig);
+  editAvatarForm.reset();
   openModal(avatarEditModal);
 });
 
@@ -93,9 +94,9 @@ editProfileBtn.addEventListener('click', () => {
 });
 addCardBtn.addEventListener('click', () => {
   clearValidation(addCardForm, validationConfig)
+  addCardForm.reset();
   openModal(addCardModal)
-}
-);
+});
 
 closeBtns.forEach(button => {
   button.addEventListener('click', () => {
@@ -130,9 +131,6 @@ function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
 
   const submitButtonElement = evt.target.querySelector(".popup__button");
-  if (submitButtonElement.classList.contains("popup__button_disabled")) {
-    return;
-  }
   renderLoading(submitButtonElement, true);
   editCurrentUserInfo({
     name: nameInput.value,
@@ -157,9 +155,6 @@ function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
 
   const submitButtonElement = evt.target.querySelector(".popup__button");
-  if (submitButtonElement.classList.contains("popup__button_disabled")) {
-    return;
-  }
   renderLoading(submitButtonElement, true);
   createCard({
     name: cardNameInput.value,
@@ -191,9 +186,6 @@ function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
 
   const submitButtonElement = evt.target.querySelector(".popup__button");
-  if (submitButtonElement.classList.contains("popup__button_disabled")) {
-    return;
-  }
   renderLoading(submitButtonElement, true);
   const url = avatarUrlInput.value;
   editCurrentUserAvatar(url)
@@ -234,7 +226,7 @@ const likeCallback = (cardId, cardElement, evt) => {
 
 const deleteCardCallback = (cardId, evt) => {
   const popup = openDeleteCardPopup();
-  popup.querySelector(".popup__button").addEventListener("click", () => {
+  popup.querySelector(".popup__button").onclick = () => {
     deleteCard(cardId)
       .then(() => {
         removeCardElement(evt);
@@ -242,5 +234,5 @@ const deleteCardCallback = (cardId, evt) => {
       .catch((err) => {
         console.log(err);
       });
-  });
+  };
 }

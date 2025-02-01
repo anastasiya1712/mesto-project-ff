@@ -16,7 +16,9 @@ export function enableValidation(validationConfig) {
 }
 
 export function clearValidation(form, validationConfig) {
-    Array.from(form.getElementsByTagName("input")).forEach((inputElement) => {
+    const inputs = Array.from(form.querySelectorAll(validationConfig.inputSelector));
+    toggleButtonState(inputs, form.querySelector(validationConfig.submitButtonSelector), validationConfig.inactiveButtonClass);
+    inputs.forEach((inputElement) => {
         hideInputError(form, inputElement, validationConfig.inputErrorClass, validationConfig.errorClass);
     })
 }
@@ -67,9 +69,11 @@ function hideInputError(formElement, inputElement, inputErrorClass, errorClass) 
 function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
     if (hasInvalidInput(inputList)) {
         buttonElement.classList.add(inactiveButtonClass);
+        buttonElement.disabled = true;
     }
     else {
         buttonElement.classList.remove(inactiveButtonClass);
+        buttonElement.disabled = false;
     }
 }
 
