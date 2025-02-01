@@ -2,7 +2,8 @@ import './pages/index.css';
 import { openModal, closeModal } from './components/modal';
 import { createCardElement, removeCardElement, likeHandler } from './components/card';
 import { enableValidation, clearValidation } from './components/validation';
-import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, createCard, deleteCard } from './components/api';
+import { getCurrentUserInfo, editCurrentUserInfo, getInitialCards, 
+  createCard, deleteCard, setLikeToCard, deleteLikeFromCard} from './components/api';
 
 const cardTemplate = document.querySelector("#card-template").content;
 const profileInfoElement = document.querySelector(".profile__info");
@@ -58,6 +59,8 @@ Promise.all([userPromise, cardsPromise])
         removeCardElement, 
         deleteCard,
         likeHandler, 
+        setLikeToCard,
+        deleteLikeFromCard,
         currentUserId);
       cardList.append(newCard);
     });
@@ -164,7 +167,9 @@ function handleAddCardFormSubmit(evt) {
         openDeleteCardPopup,
         removeCardElement, 
         deleteCard,
-        likeHandler, 
+        likeHandler,
+        setLikeToCard,
+        deleteLikeFromCard,
         currentUserId);
       cardList.prepend(newCard);
     })
